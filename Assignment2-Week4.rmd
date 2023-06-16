@@ -1,0 +1,76 @@
+---
+title: "ANA 515 week4 Assignment2"
+author: "Sakshi Kubba"
+output: html_document
+date: "2023-06-15"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+##Section 1: Description of the data
+
+```
+The data is related to NBA Forecasts and is sourced from the https://github.com/fivethirtyeight/data/tree/master/nba-forecasts. It basically has 2 sets of data one from the 1946 and other is about the latest season data. The data is in CSV fromat and if it is converted into text file then it can be delimited.
+```
+
+
+##Install the following packages 
+install.packages("dplyr")
+install.packages("tidyverse")
+install.packages("knitr")
+install.packages("bslib")
+install.packages("utils")
+
+##Section 2: Reading the data into R. 
+```{r nbaforecast, echo=TRUE}
+## get the dataset from GitHub/fivethirtyeight
+url <- "https://projects.fivethirtyeight.com/nba-model/nba_elo_latest.csv"
+nbaforecast <- read.csv(url)
+```
+##Section 3: Clean the data
+
+```{r nbaforecast2023, echo=TRUE}
+library(dplyr)
+library(tidyr)
+library(knitr)
+library(bslib)
+library(utils)
+nbaforecast2023<-filter(nbaforecast, season ==2023)
+nbaforecast2023 <- rename (nbaforecast2023, c(year = season, team_a=team1, team_b = team2, finalrating = total_rating))
+bosceltics <- filter(nbaforecast2023, team_a=="BOS" | team_b=="BOS")
+bosceltics %>%
+  select(c(date, year, team_a, team_b, score1, score2, quality,importance, finalrating))
+```
+## Section 4: Characterstics of the data
+
+This data set has `r nrow(bosceltics)` rows and `r ncol(bosceltics)` columns.
+
+## Section 5: Summary Staistics
+
+```{r, echo=TRUE}
+        kable(str(bosceltics))
+```
+
+```{r, echo=TRUE}
+    boscelticsmin <- min(bosceltics[,27])
+    boscelticsmax <- max(bosceltics[,27])
+    boscelticsmean <- mean(bosceltics[,27])
+    boscelticsmissingvalue <- colSums(is.na(bosceltics))
+```
+
+
+## Print Min Max and Mean for Final Rating of Boston Celtics
+```{r, echo=TRUE}
+    boscelticssummary <- tail(data.frame(boscelticsmin, boscelticsmax, boscelticsmean))
+    print(boscelticssummary)
+```
+## Print Missing Value sum by Column of Boston Celtics data  
+```{r, echo=TRUE}
+    boscelticssummarymissingvalue <- data.frame(boscelticsmissingvalue)
+    print(boscelticssummarymissingvalue)
+     
+```
+
+
